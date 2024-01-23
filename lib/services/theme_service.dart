@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 
 class ThemeService {
   const ThemeService._();
@@ -13,6 +15,7 @@ class ThemeService {
   static final Color darkAccentColor = Colors.blueGrey.shade600;
   static const Color darkParcticalColor = Color(0x441c2a3d);
 
+  //light Theme configuration
   static final ThemeData lightTheme = ThemeData(
       primaryColor: lightPrimaryColor,
       colorScheme: ColorScheme.light(
@@ -22,6 +25,7 @@ class ThemeService {
         surface: lightParcticalColor,
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity);
+  //dark Theme configuration
   static final ThemeData darkTheme = ThemeData(
       primaryColor: darkPrimaryColor,
       colorScheme: ColorScheme.dark(
@@ -31,4 +35,23 @@ class ThemeService {
         surface: darkParcticalColor,
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity);
+
+// setup of status bar and navigation bar themes
+  static setStatusBarAndNavigationBarColors(ThemeMode themeMode) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness:
+            themeMode == ThemeMode.light ? Brightness.light : Brightness.dark,
+        systemNavigationBarIconBrightness:
+            themeMode == ThemeMode.light ? Brightness.light : Brightness.dark,
+        systemNavigationBarColor: themeMode == ThemeMode.light
+            ? lightBackgroundColor
+            : darkBackgroundColor,
+        systemNavigationBarDividerColor: Colors.transparent));
+  }
+
+  // getter that detect and return the current Platform Brightness (light || dark)
+  static Brightness get getCurrentPlatformThemeMode =>
+      SchedulerBinding.instance.platformDispatcher.platformBrightness;
+  // MediaQuery.of(_).platformBrightness; ==> this is need to context
 }
